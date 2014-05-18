@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Menu{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="css/index.css" type="text/css" />
+
+<div id="cover_photo">
+{{ widget('cover') }}
+</div>
+
+<div class="wpb_row vc_row-fluid">
+	<div class="vc_span8 wpb_column column_container">
+		<div class="wpb_wrapper">
+			<div class="vc_separator wpb_content_element vc_separator_align_center vc_el_width_100 vc_sep_double vc_sep_color_grey">
+	<span class="vc_sep_holder vc_sep_holder_l"><span class="vc_sep_line"></span></span>
+	<h4>the map</h4>	<span class="vc_sep_holder vc_sep_holder_r"><span class="vc_sep_line"></span></span>
+</div>
+<div class="wpb_gmaps_widget wpb_content_element">
+		<div class="wpb_wrapper">
+		<div class="wpb_map_wraper">
+            {{ widget('map') }}
+        </div>
+	</div></div>
+		</div>
+	</div>
+	<div class="vc_span4 wpb_column column_container">
+		<div class="wpb_wrapper">
+			<div class="vc_separator wpb_content_element vc_separator_align_center vc_el_width_100 vc_sep_double vc_sep_color_grey">
+	<span class="vc_sep_holder vc_sep_holder_l"><span class="vc_sep_line"></span></span>
+	<h4>hours of operation</h4>	<span class="vc_sep_holder vc_sep_holder_r"><span class="vc_sep_line"></span></span>
+</div>
+	<div class="wpb_text_column wpb_content_element ">
+		<div class="wpb_wrapper">
+          <p>
+            <strong>MONDAY</strong>
+            <span style="float: right;">{{ widget('mon') }}</span>  
+          </p><p>
+            <strong>TUESDAY</strong>
+            <span style="float: right;">{{ widget('tues') }}</span> 
+          </p><p>
+            <strong>WEDNESDAY</strong>
+            <span style="float: right;">{{ widget('wed') }}</span> 
+          </p><p>
+            <strong>THURSDAY</strong>
+            <span style="float: right;">{{ widget('thurs') }}</span> 
+          </p><p>
+            <strong>FRIDAY</strong>
+            <span style="float: right;">{{ widget('fri') }}</span> 
+          </p><p>
+            <strong>SATURDAY</strong>
+            <span style="float: right;">{{ widget('sat') }}</span> 
+          </p><p>
+            <strong>SUNDAY</strong>
+            <span style="float: right;">{{ widget('sun') }}</span>
+          </p>
+		</div>
+	</div>
+		</div>
+	</div>
+    	<div class="vc_span12 wpb_column column_container" style="height: 50px; margin-top: 25px;">
+		<div class="wpb_wrapper">
+			<div class="vc_separator wpb_content_element vc_separator_align_center vc_el_width_100 vc_sep_double vc_sep_color_grey">
+	<span class="vc_sep_holder vc_sep_holder_l"><span class="vc_sep_line"></span></span>
+	<h4>Contact Us</h4>	<span class="vc_sep_holder vc_sep_holder_r"><span class="vc_sep_line"></span></span>
+</div>
+		</div>
+	</div>
+    
+    	<div class="vc_span4 wpb_column column_container">
+              {{ widget('contact') }}
+	</div>
+</div>
+
+{% endblock %}

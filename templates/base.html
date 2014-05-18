@@ -1,0 +1,48 @@
+<html>
+<head>
+    <link rel="stylesheet" href="css/main.css" />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <title>Tomu Sushi | {% block title %}{% endblock %}</title>
+</head>
+<body>
+    <div id="wrapper">
+        <div id="head-cap"><div class="col">
+            <div class="inset left-edge"><div class="inset_inner">
+                {{ widget('phone') }}
+            </div></div>
+        </div></div>
+        <div id="main" class="col">
+            <div id="header">
+                <div class="left-edge">
+                <div id="logo" class="shell">
+                    {{ widget('logo') }}
+                </div>
+                </div>
+                <nav><ul>
+                    <li><a href="/">Home
+                        <span class="slash">/</span></a></li>
+                    <li><a href="/about">About
+                        <span class="slash">/</span></a></li>
+                    <li><a href="/menu">Menu</a></li>
+                </ul></nav>
+                <div style="clear: both;"></div>
+            </div>
+            
+            {% block content %}
+            {% endblock %}
+            
+        </div>
+        <div id="tail-cap"><div class="col center">
+            Produced by Waterloo Web Dev
+            <span style="float: right; font-size: 12px;">
+                {% if mode=="view" %}<a href="?mode=edit">edit</a>
+                {% else %}<a href="?mode=view">view</a>
+                {% endif %}
+            </span>
+        </div></div>
+    </div> 
+{% if mode=="edit" %}
+    <script src="/js/edit.js"></script>  
+{% endif %}
+</body>
+</html>

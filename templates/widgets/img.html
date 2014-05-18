@@ -1,0 +1,9 @@
+<!-- Must always be wrapped in a .shell -->
+<img id="{{widget}}_widget" src="{{ current }}" />
+
+{% if mode == "edit" %}
+<form action="/alter" class="img_form" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="widget" value="{{widget}}" />
+    <input type="file" name="value" class="top_left" />
+</form>
+{% endif %}

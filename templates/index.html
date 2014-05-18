@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<div id="cover_photo" class="shell">
+{{ widget('cover') }}
+</div>
+<div class="row">
+<div style="width: 70%; padding-right: 30px;">       
+    <table class="heading"><td class="dbl-lines"><span></span></td>
+    <td><h4>Location</h4></td>
+    <td class="dbl-lines"><span></span></td></table>
+    <div style="width: 100%; height: 280px; display: table;">
+        <div class="shell">
+        {{ widget('map') }}
+        </div>
+    </div>
+</div>
+<div style="width: 30%;">       
+    <table class="heading"><td class="dbl-lines"><span></span></td>
+    <td><h4>Hours</h4></td>
+    <td class="dbl-lines"><span></span></td></table>   
+          <p>
+            <strong>MONDAY</strong>
+            <span style="float: right;">{{ widget('mon') }}</span>  
+          </p><p>
+            <strong>TUESDAY</strong>
+            <span style="float: right;">{{ widget('tues') }}</span> 
+          </p><p>
+            <strong>WEDNESDAY</strong>
+            <span style="float: right;">{{ widget('wed') }}</span> 
+          </p><p>
+            <strong>THURSDAY</strong>
+            <span style="float: right;">{{ widget('thurs') }}</span> 
+          </p><p>
+            <strong>FRIDAY</strong>
+            <span style="float: right;">{{ widget('fri') }}</span> 
+          </p><p>
+            <strong>SATURDAY</strong>
+            <span style="float: right;">{{ widget('sat') }}</span> 
+          </p><p>
+            <strong>SUNDAY</strong>
+            <span style="float: right;">{{ widget('sun') }}</span>
+          </p>
+</div>
+</div>
+<table class="heading"><td class="dbl-lines"><span></span></td>
+<td><h4>Contact Us</h4></td>
+<td class="dbl-lines"><span></span></td></table>
+<div style="font-size: 18px; line-height: 30px;">
+{{ widget('contact') }}
+</div>
+{% endblock %}
