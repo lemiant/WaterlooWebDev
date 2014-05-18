@@ -3,7 +3,8 @@
 
 {% if mode == "edit" %}
 <form action="/alter" class="img_form" method="post" enctype="multipart/form-data">
-    <input type="hidden" name="widget" value="{{widget}}" />
+    <input type="hidden" name="type" value="img" />
+    <input type="hidden" name="key" value="{{widget}}" />
     <input type="file" name="value" class="top_left" />
 </form>
 {% endif %}

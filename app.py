@@ -18,27 +18,8 @@ def nl2br(eval_ctx, value):
         for p in _paragraph_re.split(value))
     return Markup(result)
 
-
-widgets = {
-    'location': {'type': 'textarea'},
-    'cover': {'type': 'img'},
-    'phone': {'type': 'input'},
-    "mon":  {'type': 'input'},
-    "tues": {'type': 'input'},
-    "wed": {'type': 'input'},
-    "thurs":{'type': 'input'},
-    "fri":  {'type': 'input'},
-    "sat":  {'type': 'input'},
-    "sun":  {'type': 'input'},
-    "map":  {'type': 'map'},
-    "logo": {'type': 'img'},
-    "contact": {'type': 'textarea'},
-    "menu": {'type': 'menu'}
-}
-
 def widget(**kwargs):
-    def get(key):
-        widget_type = widgets[key]['type']
+    def get(key, widget_type):
         res = render_template('widgets/'+widget_type+'.html', widget=key, current=context.get(key), **kwargs)
         return Markup(res)
     return get
@@ -88,14 +69,14 @@ def unique_name():
     return str(time.time()).replace('.','') + random_string(6)
     
 def alter(context):
-    widget_type = widgets[request.form['widget']]['type']
+    widget_type = request.form['type']
     if widget_type in ["input","textarea","map"]:
         value = request.form['value']
     elif widget_type == "menu":
         value = json.loads(request.form['value'])
     elif widget_type == "img":
         value = upload_img()
-    context.update({request.form['widget']:value})
+    context.update({request.form['key']:value})
     save(context)
     
     if widget_type == "img": return value #Send back new url

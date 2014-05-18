@@ -171,9 +171,16 @@
         font-size: 18px;
         width: 100%;
     }
+    .add{
+        margin-top: 20px;
+        font-size: 20px;
+        font-weight: normal;
+        width: 100%;
+    }
     .add img{
         width:60px;
         display: inline-block;
+        vertical-align: middle;
     }
     .add_item, .add_heading{
         cursor: pointer;
@@ -183,7 +190,7 @@
     }
 </style>
 
-<div id="{{widget}}" class="sortable" style="padding-top: 5px">
+<div id="{{widget}}_widget" class="sortable" style="padding-top: 5px">
     {% for item in current %}
     <div>
     {% if item['type'] == 'heading' %}
@@ -276,64 +283,65 @@
     }
     
     menu_changes = {}
-    function update_menu(menu, widget){
+    function update_menu(menu, key){
         menu.addClass('yellow')
         
-        if(menu_changes[widget]){
-            if(typeof menu_changes[widget] == "number")
-                clearTimeout(menu_changes[widget]);
-            else if(typeof menu_changes[widget] == "object")
-                menu_changes[widget].abort()
-                menu_changes[widget] = false
+        if(menu_changes[key]){
+            if(typeof menu_changes[key] == "number")
+                clearTimeout(menu_changes[key]);
+            else if(typeof menu_changes[key] == "object")
+                menu_changes[key].abort()
+                menu_changes[key] = false
         }
-        menu_changes[widget] = setTimeout(function(){
+        menu_changes[key] = setTimeout(function(){
             $.ajax({
                 url: '/alter',
                 type: 'post',
                 data: {
-                    widget: widget,
+                    type: "menu",
+                    key: key,
                     value: JSON.stringify(generate_menu(menu)),
                 }
             }).then(function(){
                 menu.removeClass('yellow')
-                menu_changes[widget] = false
+                menu_changes[key] = false
             })
         }, 2000)
     }
 
     $('.sortable').each(function(i, menu_el){
         var menu = $(menu_el),
-            widget = menu.attr('id')
+            key = menu.attr('id').slice(0,-7)
         
         menu.disableSelection()
             .sortable({
                 containment: "parent", 
                 tolerance: "pointer", 
                 handle: ".handle", 
-                change: function(){ update_menu(menu, widget) },
+                change: function(){ update_menu(menu, key) },
                 paceholder: 'barble'
             })
 
         menu.on('click', '.remove img', function(){
             $(this).closest('table').remove()
-            update_menu(menu, widget)
+            update_menu(menu, key)
         })
 
         menu.on('input', 'input[type=text]',function(){ 
-            update_menu(menu, widget)
+            update_menu(menu, key)
         })
 
         menu.on('change', 'input[type=file]', function(){
             var img_form = $(this).closest('form')
             update_img(img_form)
-                .then(function(){ update_menu(menu, widget) })
+                .then(function(){ update_menu(menu, key) })
         })
 
         menu.on('click', '.img_remove', function(){
             var td = $(this).closest('td')
             td.removeClass('tall')
             td.find('img, .img_remove').remove()
-            update_menu(menu, widget) 
+            update_menu(menu, key) 
         })
         
         var add = menu.next('.add')
@@ -350,7 +358,7 @@
         <td class="price"><input type="text" value="Price"></td> \
         <td class="remove"><img src="/img/minus.gif"></td> \
     </tr></table>')
-            update_menu(menu, widget) 
+            update_menu(menu, key) 
         })
         
         add.find('.add_heading').on('click', function(){
@@ -359,7 +367,7 @@
         <td><input type="text" value="Heading" /></td>\
         <td class="remove"><img src="/img/minus.gif"></td> \
             </tr></table>')
-            update_menu(menu, widget) 
+            update_menu(menu, key) 
         })
         
     })

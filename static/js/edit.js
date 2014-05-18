@@ -6,32 +6,68 @@ $('.text_edit')
 last_inputs = {}
 function text_input(){
     var t = $(this),
-        widget = t.attr('id'),
+        type = ((t.is('textarea')) ? 'textarea' : 'input'),
+        key = t.attr('id').slice(0,-7),
         value = t.val()
     
     t.css('background-color', '#ffffc0')
     
-    if(last_inputs[widget]){
-        if(typeof last_inputs[widget] == "number")
-            clearTimeout(last_inputs[widget]);
-        else if(typeof last_inputs[widget] == "object")
-            last_inputs[widget].abort()
+    if(last_inputs[key]){
+        if(typeof last_inputs[key] == "number")
+            clearTimeout(last_inputs[key]);
+        else if(typeof last_inputs[key] == "object")
+            last_inputs[key].abort()
     }
-    last_inputs[widget] = setTimeout(function(){
+    last_inputs[key] = setTimeout(function(){
         console.log(value)
-        last_inputs[widget] = $.ajax({
+        last_inputs[key] = $.ajax({
             url: '/alter',
             type: 'post',
             data: {
-                    widget: widget,
+                    type: type,
+                    key: key,
                     value: value
                 }
         }).then(function(resp){
             t.css('background-color', '#dff6e2')
-            if(t.hasClass('map_input'))
-                $('#'+widget+'_map').after(resp).remove()
-            last_inputs[widget] = false;
-        }, function(){ last_inputs[widget] = false;  })
+            last_inputs[key] = false;
+        }, function(){ last_inputs[key] = false;  })
+    }, 500)
+}
+
+
+$('.map_edit')
+    .css('background-color', '#dff6e2')
+    .css('padding', '3px')
+    .on('input', map_input)
+function map_input(){
+    var t = $(this),
+        key = t.attr('name'),
+        value = t.val()
+    
+    t.css('background-color', '#ffffc0')
+    
+    if(last_inputs[key]){
+        if(typeof last_inputs[key] == "number")
+            clearTimeout(last_inputs[key]);
+        else if(typeof last_inputs[key] == "object")
+            last_inputs[key].abort()
+    }
+    last_inputs[key] = setTimeout(function(){
+        console.log(value)
+        last_inputs[key] = $.ajax({
+            url: '/alter',
+            type: 'post',
+            data: {
+                    type: "map",
+                    key: key,
+                    value: value
+                }
+        }).then(function(resp){
+            t.css('background-color', '#dff6e2')
+            $('#'+key+'_widget').after(resp).remove()
+            last_inputs[key] = false;
+        }, function(){ last_inputs[key] = false;  })
     }, 500)
 }
 
@@ -40,11 +76,9 @@ $('.img_form')
     .on('change', change_img)
 
 function change_img(){
-    widget = $(this.widget).val()
-    t = $('#'+widget)
-    console.log($(this)[0])
-    var formData = new FormData($(this)[0]);
-    console.log(formData)
+    var key = $(this.key).val(),
+        t = $('#'+key+'_widget'),
+        formData = new FormData($(this)[0]);
  
   $.ajax({
     url: '/alter',
