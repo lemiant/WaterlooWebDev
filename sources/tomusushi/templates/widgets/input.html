@@ -1,0 +1,5 @@
+{% if mode == "view" %}
+{{ current }}
+{% elif mode == "edit" %}
+<input id="{{ key }}_widget" class="text_edit" type="text" value="{{ current }}" />
+{% endif %}

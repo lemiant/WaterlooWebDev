@@ -52,7 +52,7 @@
         width: 85px;
     }
 </style>
-<div  id="{{widget}}" class="menu">
+<div  id="{{key}}_widget" class="menu">
 <table>
     {% for item in current %}
     {% if item['type'] == 'heading' %}
@@ -79,7 +79,7 @@
 </div>
 <script>
     (function(){
-        var main = $('#{{widget}}')
+        var main = $('#{{key}}_widget')
         main.find('table').each(function(i, table){
             if($(table).find('.img').length == 0){
                 $(table).find('.img_empty').hide()
@@ -190,7 +190,7 @@
     }
 </style>
 
-<div id="{{widget}}_widget" class="sortable" style="padding-top: 5px">
+<div id="{{key}}_widget" class="sortable" style="padding-top: 5px">
     {% for item in current %}
     <div>
     {% if item['type'] == 'heading' %}
@@ -205,7 +205,7 @@
         <td class="handle"><img src="/img/handle.png" /></td>
         <td class="img {{ 'tall' if item['img'] else '' }}">
             <form class="menu_img_form" enctype="multipart/form-data" method="post">
-                <input type="hidden" name="widget" value="{{widget}}" />
+                <input type="hidden" name="key" value="{{key}}" />
                 <input type="file" name="value" />
                 {% if(item['img']) %}
                 <img class="main" src="{{item['img']}}" />
@@ -350,7 +350,7 @@
         <td class="handle"><img src="/img/handle.png"></td> \
         <td class="img "> \
             <form class="menu_img_form" enctype="multipart/form-data" method="post"> \
-                <input type="hidden" name="widget" value="menu"> \
+                <input type="hidden" name="key" value="menu"> \
                 <input type="file" name="value"> \
         </form></td> \
         <td class="title"><input type="text" value="Menu Item" /></td> \

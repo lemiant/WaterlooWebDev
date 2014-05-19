@@ -1,7 +1,14 @@
+{% macro widget(key, type) %}
+    {% set current = context[key] %}
+    {% include 'widgets/'+type+'.html' %}
+{% endmacro %}
 <html>
 <head>
     <link rel="stylesheet" href="css/main.css" />
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script>
+        document.domain = document.domain.split('.').slice(-3).join('.');
+    </script>
     <title>Tomu Sushi | {% block title %}{% endblock %}</title>
 </head>
 <body>
@@ -21,8 +28,8 @@
                 <nav><ul>
                     <li><a href="/">Home
                         <span class="slash">/</span></a></li>
-                    <li><a href="/about">About
-                        <span class="slash">/</span></a></li>
+                    <!--<li><a href="/about">About
+                        <span class="slash">/</span></a></li> -->
                     <li><a href="/menu">Menu</a></li>
                 </ul></nav>
                 <div style="clear: both;"></div>
@@ -35,8 +42,8 @@
         <div id="tail-cap"><div class="col center">
             Produced by Waterloo Web Dev
             <span style="float: right; font-size: 12px;">
-                {% if mode=="view" %}<a href="?mode=edit">edit</a>
-                {% else %}<a href="?mode=view">view</a>
+                {% if not editor %}
+                    <a href="//tomusushi.wwd.com/{% block page_url %}{% endblock %}">edit</a>
                 {% endif %}
             </span>
         </div></div>
