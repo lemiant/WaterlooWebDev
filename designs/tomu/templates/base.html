@@ -1,0 +1,61 @@
+{% macro widget(key, type) %}
+    {% set current = context.get(key) %}
+    {% set kws = kwargs %}
+    {% include 'widgets/'+type+'.html' %}
+{% endmacro %}
+{% macro heading() %}
+<table class="heading">
+    <td class="dbl-lines"><span></span></td>
+    <td><h4>{{ caller() }}</h4></td>
+    <td class="dbl-lines"><span></span></td>
+</table>
+{% endmacro %}
+<html>
+<head>
+    <link rel="stylesheet" href="/css/main.css" />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script>
+        document.domain = document.domain.split('.').slice(-3).join('.');
+    </script>
+    <title>Tomu Sushi | {{ title }}</title>
+</head>
+<body>
+    <div id="wrapper">
+        <div id="head-cap"><div class="col">
+            <div class="inset left-edge"><div class="inset_inner">
+                {{ widget('phone', 'input') }}
+            </div></div>
+        </div></div>
+        <div id="main" class="col">
+            <div id="header">
+                <div class="left-edge">
+                    {{ widget('logo', 'img', mheight="125px", mwidth="400px") }}
+                </div>
+                <nav><ul>
+                    <li><a href="/">Home
+                        <span class="slash">/</span></a></li>
+                    <!--<li><a href="/about">About
+                        <span class="slash">/</span></a></li> -->
+                    <li><a href="/menu">Menu</a></li>
+                </ul></nav>
+                <div style="clear: both;"></div>
+            </div>
+            
+            {% block content %}
+            {% endblock %}
+            
+        </div>
+        <div id="tail-cap"><div class="col center">
+            Produced by Waterloo Web Dev
+            <span style="float: right; font-size: 12px;">
+                {% if not editor %}
+                    <a href="//tomusushi.wwd.com:8080/{{ page_url }}">edit</a>
+                {% endif %}
+            </span>
+        </div></div>
+    </div> 
+{% if mode=="edit" %}
+    <script src="/js/edit.js"></script>  
+{% endif %}
+</body>
+</html>

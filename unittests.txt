@@ -1,0 +1,2 @@
+- check that the menu works in FireFox
+- Check that newly created menu items are dragable

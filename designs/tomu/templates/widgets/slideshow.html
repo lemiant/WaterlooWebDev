@@ -1,0 +1,194 @@
+<style>
+    .slideshow_widget{
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        position: relative;
+    }
+    #{{key}}_widget img{
+        max-height: {{kws['mheight']}};
+        max-width: {{kws['mwidth']}};
+    }
+    
+    .slideshow_widget img{
+        display: none;
+    }
+    .slideshow_widget img.first{
+        display: inline-block;
+    }
+    .slide_container{  
+        background-color: white;
+        border-collapse: collapse;
+        position: absolute; 
+        width: 100%;
+        height: 100%;
+        display: none;
+        top: 0;
+        left: 0;
+        margin: 0;
+        padding: 0;
+    }
+    .slide_container td{
+        text-align: center;
+        vertical-align: middle
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        margin: 0;
+    }
+</style>
+<div style="position: relative">
+<div id="{{key}}_widget" class="slideshow_widget">
+    {% for img in current %}
+    <img src="{{img}}" {% if loop.first %}class="first"{% endif %} />
+    {% endfor %}
+</div>
+    
+{% if mode == "edit" %}
+<style>
+    .slideshow_sidebar{
+        position: absolute;
+        left: -230px;
+        top: 0;
+        background-color: #dff6e2;
+        width: 230px;
+        height: 300px;
+        overflow-y: scroll;
+        box-shadow: 0px 0px 10px 2px #464646 inset;
+    }
+    .slideshow_sidebar.yellow{
+        background-color: #ffffc0;
+    }
+    .slideshow_sidebar form{
+        margin: 20px auto;
+        text-align: center;
+    }
+    .slideshow_sidebar .sidebar_shell{
+        height: 175px;
+        width: 175px;
+        margin: 15px auto;
+        border-collapse: collapse;
+    }
+    .slideshow_sidebar .sidebar_shell td{
+        height: 175px;
+        width: 175px;
+        margin: 8px 0;
+        vertical-align: middle;
+        text-align: center;
+    }
+    .slideshow_sidebar img{
+        max-height: 100%;
+        max-width: 100%;
+        box-shadow: 1px 1px 5px 3px #464646;
+    }
+</style>
+
+<div id="{{key}}_sidebar" class="slideshow_sidebar">
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="value" />
+    </form>
+</div>
+    
+<script>
+    function add_to_sidebar(sidebar, src){
+        sidebar.append('\
+            <table class="sidebar_shell">\
+            <td>\
+            <div style="position: relative; display: inline-block;">\
+                <img src="'+src+'"/>\
+                <div class="x_button" style="top: 10px; right: 10px;">&times;</div>\
+            </div>\
+            </td>\
+        </table>')
+    }
+    
+    function update_slideshow(root, sidebar){
+        sidebar.addClass('yellow')
+        var imgs = $.map(root.find('img'), function(img){
+            return $(img).attr('src')
+        })     
+        console.log(imgs)
+        var key = root.attr('id').slice(0,-7)
+        $.ajax({
+                url: '/alter',
+                type: 'post',
+                data: {
+                    type: "slideshow",
+                    key: key,
+                    value: JSON.stringify(imgs),
+                }
+            }).then(function(){
+                setTimeout(function(){ sidebar.removeClass('yellow') }, 800)
+            })
+    }
+    
+    (function(sidebar){ 
+        root = $('#{{key}}_widget')
+        root.find('img').each(function(i, slide){
+            var src = $(slide).attr('src')
+            add_to_sidebar(sidebar, src)
+        })
+        sidebar.on('click', '.x_button', function(){
+            var node = $(this).closest('table')
+            var src = node.find('img').attr('src')
+            root.find('img[src$="'+src+'"]').remove()
+            node.remove()
+            update_slideshow(root, sidebar)
+        })
+        sidebar.find('input[type=file]').on('change', function(){
+            var formData = new FormData($(this).closest('form')[0]);
+            sidebar.addClass('yellow')
+            
+            $.ajax({
+                url: '/upload',
+                type: 'post',
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false
+            }).then(function(resp){
+                add_to_sidebar(sidebar, resp)
+                root.append('<img src="'+resp+'" />')
+                update_slideshow(root, sidebar)
+            })
+        })
+    }( $("#{{key}}_sidebar") )
+    )
+</script>
+{% endif %}
+</div>
+<script>
+    (function(root){ 
+        var slide_container = '<table class="slide_container"><td></td></table>'
+        var n_c = $(slide_container)
+        var f = root.find('img.first')
+        f.after(n_c)
+        n_c.show()
+            .find('td').append(f)
+        
+        setInterval(function(){
+            if(root.find('img').length > 1){
+                var old_container = root.find('table:visible')
+                var next = old_container.next();
+                if(! next.length) next = $('#{{key}}_widget img').first()
+
+                var new_container = $(slide_container)
+                next.after(new_container)
+                new_container.find('td').append(next)
+                next.show()
+
+                new_container.css('z-index', '100')
+                    .fadeIn(400)
+                    .promise().done(function(){
+                        cur = old_container.find('img')
+                        cur.hide()
+                        old_container.before(cur)
+                        old_container.remove()
+                        new_container.css('z-index', '1')
+                    })  
+            }
+        }, 1500)
+    }( $("#{{key}}_widget") )
+    )
+    
+</script>

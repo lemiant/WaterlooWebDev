@@ -1,0 +1,89 @@
+<html>
+<head>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script>
+        document.domain = document.domain.split('.').slice(-3).join('.');
+    </script>
+    <style>
+        html, body{
+            margin: 0;
+            padding: 0;
+        }
+        #iframe-wrapper{
+            background-color: white;
+            box-sizing: border-box;
+            height: 100%;
+            width: 100%;
+            padding: 0 0 80px;
+            margin: 0% auto;
+        }
+        iframe{
+            height: 100%;
+            width: 100%;
+        }
+        #edit-bar{
+            position: absolute; 
+            bottom: 0; width: 100%; 
+            height: 80px;   
+            background-color: #bfa064;
+            background-image: linear-gradient(
+                transparent
+                transparent 33.33%, white 33.33%, 
+                white 66.66%, red 66.66%
+              );
+            display: table;
+            table-layout: fixed;
+            font-size: 24px;
+        }
+        #edit-bar select, #edit-bar input{   
+            font-size: 24px;
+        }
+        .edit-cell{
+            display: table-cell;
+            vertical-align: middle;
+            text-align: center;
+            padding: 15px;
+        }
+        #spinny{
+            height: 50px;
+            vertical-align: middle;
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="iframe-wrapper">
+        <iframe id="page" src="//edit.{{request.url.split('://')[1]}}"></iframe>
+    </div>
+    <div id="edit-bar">
+        <div class="edit-cell">
+            <a href="//{{ meta['url'] }}" id="return">Return to Live Site</a>
+        </div>
+        <div class="edit-cell">
+            <select id="mode">
+                <option value="edit">Edit</option>
+                <option value="view">Preview</option>
+            </select>
+        </div>
+        <div class="edit-cell">
+            <input type="submit" id="update" value="Update Live Site" />
+        </div>
+    </div>
+    <script>
+        $('#return').attr('href', $('#return').attr('href')+'?time='+new Date().getTime())
+        $('#mode').on('change', function(){
+            iframe = $('iframe#page')
+            src = iframe[0].contentWindow.location.href
+            console.log(src)
+            page = src.slice(src.indexOf('.')+1)
+            $('iframe#page').attr('src', '//'+$(this).val()+'.'+page)
+        })
+        $('#update').on('click', function(){
+            $(this).after('<img src="/img/load.gif" id="spinny"/>')
+            $.ajax('/regenerate').then(function(){
+                setTimeout(function(){ $('#spinny').remove() }, 1000)
+            })
+        })
+    </script>
+</body>
+</html>

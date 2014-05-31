@@ -1,0 +1,11 @@
+<div style="position: relative;">
+<img id="{{key}}_widget" src="{{ current }}" style="margin: auto; max-height: {{ kws['mheight'] }}; max-width: {{ kws['mwidth'] }}"/>
+
+{% if mode == "edit" %}
+<form action="/alter" class="img_form" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="type" value="img" />
+    <input type="hidden" name="key" value="{{key}}" />
+    <input type="file" name="value" class="top_left" />
+</form>
+{% endif %}
+</div>
