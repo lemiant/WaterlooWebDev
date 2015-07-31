@@ -1,11 +1,16 @@
-<div style="position: relative;">
-<img id="{{key}}_widget" src="{{ current }}" style="margin: auto; max-height: {{ kws['mheight'] }}; max-width: {{ kws['mwidth'] }}"/>
+<div id="{{key}}_widget" class="img_wrapper" style="position: relative;">
+<img src="{{ current }}" style="margin: auto; max-height: {{ kws['mheight'] }}; max-width: {{ kws['mwidth'] }}"/>
 
 {% if mode == "edit" %}
-<form action="/alter" class="img_form" method="post" enctype="multipart/form-data">
-    <input type="hidden" name="type" value="img" />
-    <input type="hidden" name="key" value="{{key}}" />
-    <input type="file" name="value" class="top_left" />
-</form>
+<div style="position: absolute; right: 10px; top: 10px;">
+{% include('widgets/bits/img_upload.html') %}
+</div>
+<script type="text/javascript">
+    (function(root){
+        root.on('upload', function(e, url){
+            alter_context(root, url, 0, function(){ root.find('img').attr('src', url) })
+        })
+    }($('#{{key}}_widget')))
+</script>
 {% endif %}
 </div>

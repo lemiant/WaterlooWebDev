@@ -1,0 +1,21 @@
+<form class="img_upload" menctype="multipart/form-data" style="display: inline-block"><input type="file" name="img" /></form>
+<script>
+// Triger event - caught by  $('.img_upload').on('upload', function(e, url){ })
+$('.img_upload').last()
+    .on('change', function(){
+        var form = $(this);
+        var formData = new FormData(this);
+		$.ajax({
+			url: '/upload',
+			type: 'POST',
+			data: formData,
+			cache: false,
+			contentType: false,
+			processData: false,
+			success: function (resp) {
+			  form.trigger('upload', [resp])
+			}
+		});
+        form.trigger('upload_start');
+	})
+</script>

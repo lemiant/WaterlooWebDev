@@ -1,2 +1,3 @@
 - Always use mheight/mwidth for image sizing
 - Widgets expand to fill container when possible/necessary
+- widgets should have the id {{key}}_widget 

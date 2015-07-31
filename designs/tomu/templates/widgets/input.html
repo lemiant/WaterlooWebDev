@@ -1,5 +1,20 @@
 {% if mode == "view" %}
 {{ current }}
 {% elif mode == "edit" %}
-<input id="{{ key }}_widget" class="text_edit" type="text" value="{{ current }}" />
+<style>
+    .input_widget{
+        background-color: #dff6e2;
+        padding: 3px;
+    }
+    .input_widget.pending{
+        background-color: #ffffc0;
+    }
+</style>
+<input id="_{{key}}" class="input_widget" type="text" value="{{ current }}" />
+<script>
+    (function(marbles){
+        //console.log(input)
+        marbles.on('input', function(){ console.log('hrrrr'); })
+    }( $('_{{key}}') ))
+</script>
 {% endif %}

@@ -1,3 +1,4 @@
+{% if mode == "view" %}
 <style>
     .slideshow_widget{
         width: 100%;
@@ -16,8 +17,7 @@
     .slideshow_widget img.first{
         display: inline-block;
     }
-    .slide_container{  
-        background-color: white;
+    .slide_container{
         border-collapse: collapse;
         position: absolute; 
         width: 100%;
@@ -25,138 +25,22 @@
         display: none;
         top: 0;
         left: 0;
-        margin: 0;
-        padding: 0;
     }
     .slide_container td{
         text-align: center;
         vertical-align: middle
         width: 100%;
         height: 100%;
-        padding: 0;
-        margin: 0;
     }
 </style>
-<div style="position: relative">
 <div id="{{key}}_widget" class="slideshow_widget">
-    {% for img in current %}
-    <img src="{{img}}" {% if loop.first %}class="first"{% endif %} />
-    {% endfor %}
+    <ul>
+        {% for img in current %}
+        <img src="{{img}}" {% if loop.first %}class="first"{% endif %} />
+        {% endfor %}
+    </ul>
 </div>
-    
-{% if mode == "edit" %}
-<style>
-    .slideshow_sidebar{
-        position: absolute;
-        left: -230px;
-        top: 0;
-        background-color: #dff6e2;
-        width: 230px;
-        height: 300px;
-        overflow-y: scroll;
-        box-shadow: 0px 0px 10px 2px #464646 inset;
-    }
-    .slideshow_sidebar.yellow{
-        background-color: #ffffc0;
-    }
-    .slideshow_sidebar form{
-        margin: 20px auto;
-        text-align: center;
-    }
-    .slideshow_sidebar .sidebar_shell{
-        height: 175px;
-        width: 175px;
-        margin: 15px auto;
-        border-collapse: collapse;
-    }
-    .slideshow_sidebar .sidebar_shell td{
-        height: 175px;
-        width: 175px;
-        margin: 8px 0;
-        vertical-align: middle;
-        text-align: center;
-    }
-    .slideshow_sidebar img{
-        max-height: 100%;
-        max-width: 100%;
-        box-shadow: 1px 1px 5px 3px #464646;
-    }
-</style>
 
-<div id="{{key}}_sidebar" class="slideshow_sidebar">
-    <form action="/upload" method="post" enctype="multipart/form-data">
-        <input type="file" name="value" />
-    </form>
-</div>
-    
-<script>
-    function add_to_sidebar(sidebar, src){
-        sidebar.append('\
-            <table class="sidebar_shell">\
-            <td>\
-            <div style="position: relative; display: inline-block;">\
-                <img src="'+src+'"/>\
-                <div class="x_button" style="top: 10px; right: 10px;">&times;</div>\
-            </div>\
-            </td>\
-        </table>')
-    }
-    
-    function update_slideshow(root, sidebar){
-        sidebar.addClass('yellow')
-        var imgs = $.map(root.find('img'), function(img){
-            return $(img).attr('src')
-        })     
-        console.log(imgs)
-        var key = root.attr('id').slice(0,-7)
-        $.ajax({
-                url: '/alter',
-                type: 'post',
-                data: {
-                    type: "slideshow",
-                    key: key,
-                    value: JSON.stringify(imgs),
-                }
-            }).then(function(){
-                setTimeout(function(){ sidebar.removeClass('yellow') }, 800)
-            })
-    }
-    
-    (function(sidebar){ 
-        root = $('#{{key}}_widget')
-        root.find('img').each(function(i, slide){
-            var src = $(slide).attr('src')
-            add_to_sidebar(sidebar, src)
-        })
-        sidebar.on('click', '.x_button', function(){
-            var node = $(this).closest('table')
-            var src = node.find('img').attr('src')
-            root.find('img[src$="'+src+'"]').remove()
-            node.remove()
-            update_slideshow(root, sidebar)
-        })
-        sidebar.find('input[type=file]').on('change', function(){
-            var formData = new FormData($(this).closest('form')[0]);
-            sidebar.addClass('yellow')
-            
-            $.ajax({
-                url: '/upload',
-                type: 'post',
-                data: formData,
-                cache: false,
-                contentType: false,
-                processData: false
-            }).then(function(resp){
-                add_to_sidebar(sidebar, resp)
-                root.append('<img src="'+resp+'" />')
-                update_slideshow(root, sidebar)
-            })
-        })
-    }( $("#{{key}}_sidebar") )
-    )
-</script>
-{% endif %}
-</div>
 <script>
     (function(root){ 
         var slide_container = '<table class="slide_container"><td></td></table>'
@@ -176,7 +60,8 @@
                 next.after(new_container)
                 new_container.find('td').append(next)
                 next.show()
-
+                
+                old_container.fadeOut(400);
                 new_container.css('z-index', '100')
                     .fadeIn(400)
                     .promise().done(function(){
@@ -187,8 +72,167 @@
                         new_container.css('z-index', '1')
                     })  
             }
-        }, 1500)
+        }, 3500)
     }( $("#{{key}}_widget") )
     )
-    
 </script>
+
+
+
+
+{% elif mode == "edit" %}
+<style>        
+    .slideshow_add_img{
+        position: absolute;
+        z-index: 2;
+        background-color: lightgrey;
+        border: 1px solid grey;
+        height: 30px;
+        width: 100%;
+        text-align: center;
+        line-height: 26px;
+    }
+    .slideshow_edit{
+        padding-top: 30px;
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+    .slideshow_edit .left, .slideshow_edit .right{
+        cursor: pointer;
+        position: absolute;
+        z-index: 50;
+        top: 50%;
+        margin-top: -32px;
+        height: 44px;
+        width: 29px;
+    }
+    .slideshow_edit .left{
+        background-image: url('img/left.png');
+        left: 0;
+    }
+    .slideshow_edit .left:hover{
+        background-image: url('img/left_highlight.png');
+    }
+    .slideshow_edit .right{
+        background-image: url('img/right.png');
+        right: 0;
+    }
+    .slideshow_edit .right:hover{
+        background-image: url('img/right_highlight.png');
+    }
+    .slideshow_edit img{
+        max-height: 100%;
+        max-width: 100%;
+        box-shadow: 1px 1px 5px 3px #464646;
+    }
+    .slideshow_wrapper{
+        position: relative;
+        white-space:nowrap;
+        overflow-x: scroll;
+        height: 100%;
+        width: 100%;
+        background-color: #dff6e2;
+        box-shadow: 0px 0px 10px 2px #464646 inset;
+    }
+    .pending .slideshow_wrapper{
+        background-color: #f1f8da;
+    }
+    .slideshow_shell{
+        vertical-align: top;
+        display: inline-block;
+        text-align: center;
+        height: 100%; 
+        width: 100%;
+    }
+    .slideshow_shell:before {
+        content: '';
+        display: inline-block;
+        vertical-align: middle;
+        height: 100%;
+    }
+    .slideshow_tight{
+       display: inline-block;
+       vertical-align: middle;
+       position: relative;
+       max-height: 85%;
+       max-width: 85%;
+    }
+    .slideshow_remove{
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background-color: rgb(235, 235, 235);
+        font-family: arial;
+        font-weight: bold;
+        font-size: 20px;
+        height: 20px;
+        width: 22px;
+        line-height: 15px;
+        border-radius: 4px;
+        border: 2px solid grey;
+        color: rgb(233, 131, 131);
+        cursor: pointer;
+    }
+</style>
+<div id="{{key}}_widget" class="slideshow_outer" style="position: relative; height: 100%; width: 100%;">
+	<div class="slideshow_add_img">
+		<strong>Add Image:</strong> &nbsp; {% include('widgets/bits/img_upload.html') %}
+	</div>
+	<div class="slideshow_edit">
+		<span class="left"></span>
+		<span class="right"></span>
+		<div class="slideshow_wrapper"></div>
+	</div>
+</div>
+<script>
+    function add_img(root, src){
+        root.find('.slideshow_wrapper').append('<div class="slideshow_shell"><!--\
+            --><div class="slideshow_tight"><img \
+            src="'+src+'" /><span  \
+            class="slideshow_remove">x</span></div><!-- \
+            --></div>');
+    }
+
+	( function(root){
+        var alter_me = function(){
+            var value = root.find('img').map(function(i, e){ return $(e).attr('src') }).get()
+            alter_context(root, value, 0)
+        }
+		var wrap = root.find('.slideshow_wrapper');
+        
+		{% for src in current %}
+		add_img(root, '{{src}}');
+		{% endfor %}
+
+		root.find('.right').on('click', function(){
+			var scroll = wrap.scrollLeft();
+			var cell_width = wrap.width();
+			var next = Math.ceil((scroll+1)/cell_width)*cell_width;
+			wrap.animate({scrollLeft: next}, 400);
+		})
+		root.find('.left').on('click', function(){
+			var scroll = wrap.scrollLeft();
+			var cell_width = wrap.width();
+			var next = Math.floor((scroll-1)/cell_width)*cell_width;
+			wrap.animate({scrollLeft: next}, 400);
+		})
+		root.on('click', '.slideshow_remove', function(){
+			var shell = $(this).closest('.slideshow_shell')
+                set_pending(root)
+				shell.animate({width: 0}, 375).promise()
+                    .then(function(){ shell.remove(); alter_me(); })
+		})
+		
+		root.on('upload', '.img_upload', function(e, url){
+			add_img(root, url);
+            wrap.animate({scrollLeft: wrap.scrollLeft()+root.find('.slideshow_shell:last').position().left}, 500)
+            alter_me();
+            
+		})
+        root.on('upload_start', '.img_upload', function(e, url){
+            set_pending(root)
+        })
+	} ($('.slideshow_outer').last()) )
+</script>
+{% endif %}

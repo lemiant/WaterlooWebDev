@@ -30,6 +30,7 @@ def get_env():
             'meta': context['meta'],
             'data_dir': data_dir,
             'design_dir': design_dir,
+            'isEditor': True,
             'authorized': authorized,
             'mode': mode,
             'request': request, 
@@ -107,7 +108,7 @@ def regenerate_pages(env):
         if 'login' in  file or 'base' in file: continue
         else:
             with open(SITE_DIR+BUILD_DIR+file, 'w') as static:
-                static.write(env.get_template(file).render().encode('ascii', 'xmlcharrefreplace'))
+                static.write(env.get_template(file).render(isEditor=False).encode('ascii', 'xmlcharrefreplace'))
     LINK_NAME = unique_name()
     os.symlink(BUILD_DIR, SITE_DIR+LINK_NAME)
     os.rename(SITE_DIR+LINK_NAME, SITE_DIR+'current')
@@ -118,7 +119,7 @@ def regenerate_pages(env):
 
 def upload_img(env):
     extensions = ['.png', '.jpg', '.jpeg', '.gif', '.svg']
-    file = request.files.get('value')
+    file = request.files.get('img')
     if file:
         name, ext = os.path.splitext(file.filename.lower())
         if ext in extensions:
@@ -134,12 +135,8 @@ def unique_name():
 def alter(env):
     context = env.globals['context']
     widget_type = request.form['type']
-    if widget_type in ["input","textarea","map"]:
-        value = request.form['value']
-    elif widget_type in ["menu", "slideshow"]:
-        value = json.loads(request.form['value'])
-    elif widget_type == "img":
-        value = upload_img(env)
+    
+    value = json.loads(request.form['value'])
         
     new_context = dict(context.items() + [(request.form['key'], value)])
     data_dir = env.globals['data_dir']

@@ -4,31 +4,31 @@
     {% include 'widgets/'+type+'.html' %}
 {% endmacro %}
 {% macro heading() %}
-<table class="heading">
-    <td class="dbl-lines"><span></span></td>
+<table class="g_heading">
+    <td class="dbl_lines"><span></span></td>
     <td><h4>{{ caller() }}</h4></td>
-    <td class="dbl-lines"><span></span></td>
+    <td class="dbl_lines"><span></span></td>
 </table>
 {% endmacro %}
 <html>
 <head>
     <link rel="stylesheet" href="/css/main.css" />
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="/js/jquery.js"></script>
     <script>
         document.domain = document.domain.split('.').slice(-3).join('.');
     </script>
     <title>Tomu Sushi | {{ title }}</title>
 </head>
 <body>
-    <div id="wrapper">
-        <div id="head-cap"><div class="col">
-            <div class="inset left-edge"><div class="inset_inner">
+    <div id="g_wrapper">
+        <div class="g_endstop"><div class="g_col">
+            <div class="inset" style="float: left;"><div class="inset_inner">
                 {{ widget('phone', 'input') }}
             </div></div>
         </div></div>
-        <div id="main" class="col">
-            <div id="header">
-                <div class="left-edge">
+        <div id="g_main" class="g_col">
+            <div id="g_header">
+                <div style="float: left;">
                     {{ widget('logo', 'img', mheight="125px", mwidth="400px") }}
                 </div>
                 <nav><ul>
@@ -45,11 +45,11 @@
             {% endblock %}
             
         </div>
-        <div id="tail-cap"><div class="col center">
+        <div id="g_tail_endstop" class="g_endstop"><div class="g_col" style="text-align: center;">
             Produced by Waterloo Web Dev
             <span style="float: right; font-size: 12px;">
-                {% if not editor %}
-                    <a href="//tomusushi.wwd.com:8080/{{ page_url }}">edit</a>
+                {% if not isEditor %}
+                    <a href="//tomusushi.wwd.com/{{ page_url }}">edit</a>
                 {% endif %}
             </span>
         </div></div>

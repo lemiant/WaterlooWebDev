@@ -3,51 +3,60 @@
 {% set page_url = 'index' %}
 {% block content %}
 
-<div style="padding: 25px 0 0;">
-{{ widget('cover', 'img', mheight="350px", mwidth="900px") }}
+<div style="padding: 25px 0 0; height: 350px; position: relative;">
+{{ widget('cover', 'slideshow', mheight="350px", mwidth="900px") }}
 </div>
-<div class="row">
-<div style="width: 70%; padding-right: 30px;">       
-    {% call heading() %}Location{% endcall %}
 
-    <div style="height:280px; width:100%">
-        {{ widget('map', 'map') }}
+<div class="g_row">
+
+    <div style="width: 70%; padding-right: 30px;">       
+        {% call heading() %}Location{% endcall %}
+
+        <div style="height:280px; width:100%">
+            {{ widget('location', 'map') }}
+        </div>
+    </div>
+
+    <div style="width: 30%;">       
+        {% call heading() %}Hours{% endcall %}
+         <p>
+          <strong>MONDAY</strong>
+          <span style="float: right;">{{ widget('mon', 'input') }}</span>  
+         </p><p>
+          <strong>TUESDAY</strong>
+          <span style="float: right;">{{ widget('tues', 'input') }}</span> 
+         </p><p>
+          <strong>WEDNESDAY</strong>
+          <span style="float: right;">{{ widget('wed', 'input') }}</span> 
+         </p><p>
+          <strong>THURSDAY</strong>
+          <span style="float: right;">{{ widget('thurs', 'input') }}</span> 
+         </p><p>
+          <strong>FRIDAY</strong>
+          <span style="float: right;">{{ widget('fri', 'input') }}</span> 
+         </p><p>
+          <strong>SATURDAY</strong>
+          <span style="float: right;">{{ widget('sat', 'input') }}</span> 
+         </p><p>
+          <strong>SUNDAY</strong>
+          <span style="float: right;">{{ widget('sun', 'input') }}</span>
+         </p>
     </div>
 </div>
-<div style="width: 30%;">       
-    {% call heading() %}Hours{% endcall %}
-     <p>
-      <strong>MONDAY</strong>
-      <span style="float: right;">{{ widget('mon', 'input') }}</span>  
-     </p><p>
-      <strong>TUESDAY</strong>
-      <span style="float: right;">{{ widget('tues', 'input') }}</span> 
-     </p><p>
-      <strong>WEDNESDAY</strong>
-      <span style="float: right;">{{ widget('wed', 'input') }}</span> 
-     </p><p>
-      <strong>THURSDAY</strong>
-      <span style="float: right;">{{ widget('thurs', 'input') }}</span> 
-     </p><p>
-      <strong>FRIDAY</strong>
-      <span style="float: right;">{{ widget('fri', 'input') }}</span> 
-     </p><p>
-      <strong>SATURDAY</strong>
-      <span style="float: right;">{{ widget('sat', 'input') }}</span> 
-     </p><p>
-      <strong>SUNDAY</strong>
-      <span style="float: right;">{{ widget('sun', 'input') }}</span>
-     </p>
+<div class="g_row">
+    
+    <div style="width: 65%; padding-right: 30px;">
+    {% call heading() %}What's New?{% endcall %}
+    <div style="height: 600px; width: 100%;">
+        {{ widget('facebook_url', 'facebook_feed') }}
+    </div>
+    </div>
+
+    <div style="width: 35%;">
+    {% call heading() %}Contact Us{% endcall %}
+    <div style="font-size: 18px; line-height: 30px;">
+    {{ widget('contact', 'textarea') }}
+    </div>
+    {% endblock %}
+    </div>
 </div>
-</div>
-{% call heading() %}Cafe Pyrus is Social {% endcall %}
-<div style="width: 80%; height: 400px; margin: 20px auto;">
-    {{ widget('facebook_url', 'facebook_feed') }}
-</div>
-<table class="heading"><td class="dbl-lines"><span></span></td>
-<td><h4>Contact Us</h4></td>
-<td class="dbl-lines"><span></span></td></table>
-<div style="font-size: 18px; line-height: 30px;">
-{{ widget('contact', 'textarea') }}
-</div>
-{% endblock %}
